@@ -1,0 +1,30 @@
+---
+
+- name: Create an app ssl directory
+  become: true
+  file:
+    path: /opt/app/ssl
+    state: directory
+    owner: "{{ devops_user }}"
+    group: "{{ devops_user }}"
+    mode: 0750
+
+- name: Create openssl private key
+  become: yes
+  openssl_privatekey:
+    path: /opt/app/ssl/aws-scraper-ssl.key
+    size: 2048 
+
+- name: Create openssl csr
+  become: yes
+  openssl_csr:
+    path: /opt/app/ssl/aws-scraper-ssl.csr
+    privatekey_path: /opt/app/ssl/aws-scraper-ssl.key
+
+- name: Create openssl certificate
+  become: yes
+  openssl_certificate:
+    provider: selfsigned
+    path: /opt/app/ssl/aws-scraper-ssl.crt
+    privatekey_path: /opt/app/ssl/aws-scraper-ssl.key
+    csr_path: /opt/app/ssl/aws-scraper-ssl.csr

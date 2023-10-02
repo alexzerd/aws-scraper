@@ -1,0 +1,28 @@
+---
+
+- name: Create group
+  group:
+    name: "{{ group_name }}"
+    state: present
+  become: yes
+
+- name: Create user
+  user:
+    name: "{{ user_name }}"
+    group: "{{ group_name }}"
+  become: yes
+
+- name: Configure ssh
+  authorized_key:
+    user: "{{ user_name }}"
+    key: "{{ lookup('file', 'files/user_key.pem') }}"
+    state: present
+
+- name: Grant sudo privileges to user
+  template:
+    src: "files/sudoers_template.conf.j2"
+    dest: "/etc/sudoers.d/{{ user_name }}"
+    mode: 0440
+    validate: /usr/sbin/visudo -cf %s
+    backup: yes
+  become: yes

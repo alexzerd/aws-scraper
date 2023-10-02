@@ -1,0 +1,28 @@
+- name: Create user
+  hosts: webserver
+  roles:
+  - role: devops_user
+
+- name: Setup Docker
+  hosts: webserver
+  roles:
+  - role: docker
+
+- name: Create openssl cert
+  hosts: webserver
+  roles:
+  - role: openssl
+
+- name: Run web application
+  hosts: webserver
+  tasks:
+  - name: Copy docker-compose templates
+    become: true
+    copy:
+      src: templates/
+      dest: /opt/app/
+
+  - name: Start docker containers
+    shell:
+      cmd: docker compose -f docker-compose.yml up -d
+      chdir: /opt/app

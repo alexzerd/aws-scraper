@@ -1,0 +1,8 @@
+[webserver:vars]
+ansible_connection=ssh
+ansible_port=22
+ansible_user=devops
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+[webserver]
+172.105.247.205 devops_user=devops

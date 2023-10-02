@@ -1,0 +1,18 @@
+version: '3'
+services:
+  scraper:
+    image: alexzerd/aws-scraper
+    restart: always
+    expose:
+      - "5000"
+
+  nginx-proxy:
+    image: nginx
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl/:/etc/nginx/ssl/
+    depends_on:
+      - scraper
